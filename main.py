@@ -66,9 +66,10 @@ def move_map(shift_x= 0, shift_y=0):
         s.rect.y += shift_y
     #checking for collision with walls
     coll_list = sprite.spritecollide(player, walls, False, sprite.collide_mask)
-    for s in coll_list:
-        s.rect.x -= shift_x
-        s.rect.y -= shift_y
+    if len(coll_list)>0:
+        for s in all_sprites:
+            s.rect.x -= shift_x
+            s.rect.y -= shift_y
 
 #class for player
 class Player(BaseSprite):
