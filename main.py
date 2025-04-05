@@ -60,6 +60,15 @@ class BaseSprite(sprite.Sprite):
     def draw(self, window):
         window.blit(self.image, self.rect)
 
+def move_map(shift_x= 0, shift_y=0):
+    for s in all_sprites:
+        s.rect.x += shift_x
+        s.rect.y += shift_y
+    #checking for collision with walls
+    coll_list = sprite.spritecollide(player, walls, False, sprite.collide_mask)
+    for s in coll_list:
+        s.rect.x -= shift_x
+        s.rect.y -= shift_y
 
 #class for player
 class Player(BaseSprite):
@@ -72,36 +81,23 @@ class Player(BaseSprite):
         self.coins = 0
 
     def update(self):
-        old_pos = self.rect.x, self.rect.y
+        shift_x, shift_y = 0, 0
         keys = key.get_pressed()
-        if keys[K_a]:
-           if self.rect.x <= WIDTH / 4:
-                for s in all_sprites:
-                    if s != self:
-                        s.rect.x += self.speed
 
+        if keys[K_a]:
+           if self.rect.x <= WIDTH / 2:
+                shift_x += self.speed
         if keys[K_d]:
             if self.rect.x >= WIDTH / 4:
-                for s in all_sprites:
-                    if s != self:
-                        s.rect.x -= self.speed
+                shift_x -= self.speed
         if keys[K_w]:
-            if self.rect.x <= HEIGHT / 4:
-                for s in all_sprites:
-                    if s != self:
-                        s.rect.y += self.speed
+            if self.rect.y <= HEIGHT / 3:
+                shift_y += self.speed
         if keys[K_s]:
             if self.rect.x >= HEIGHT / 4:
-                for s in all_sprites:
-                    if s != self:
-                        s.rect.y -= self.speed
+                self.rect.y -= self.speed
 
-
-        #checking for collision with walls
-        coll_list = sprite.spritecollide(self, walls, False, sprite.collide_mask)
-        if len(coll_list) > 0:
-            self.rect.x, self.rect.y = old_pos
-
+        move_map(shift_x, shift_y)
 
 
 #map loading
@@ -115,6 +111,7 @@ with open("map.txt", "r") as file:
                     walls.add(wall)
                 if symbol == "p":
                     player = Player(player_img, x, y, TILE_SIZE-10, TILE_SIZE-10)
+                    all_sprites.remove(player)
                 x += TILE_SIZE 
             x = 0
             y += TILE_SIZE 
@@ -136,6 +133,7 @@ while run:
     #window.blit()
     all_sprites.draw(window)
     all_labels.draw(window)
+    player.draw(window)
     player.update()
     display.update()
     clock.tick(FPS)
