@@ -4,16 +4,15 @@ import random
 init()
 font.init()
 
-
 FONT = "Play-Bold.ttf"
 
 FPS = 60
 
-TILE_SIZE = 40
-MAP_WIDTH, MAP_HEIGHT = 34.2, 19.2
-WIDTH, HEIGHT = TILE_SIZE*MAP_WIDTH, TILE_SIZE*MAP_HEIGHT
+TILE_SIZE = 35
 
-window = display.set_mode((WIDTH, HEIGHT))
+scr_info = display.Info()
+WIDTH, HEIGHT = scr_info.current_w, scr_info.current_h
+window = display.set_mode((WIDTH, HEIGHT), flags=FULLSCREEN)
 display.set_caption("PixelGame")
 clock = time.Clock()
 
@@ -21,18 +20,16 @@ clock = time.Clock()
 #sprite 
 wall = image.load("images/wall.png")
 wall_img = transform.scale(wall, (TILE_SIZE, TILE_SIZE))
+
 player = image.load("images/player.png")
 player_img = transform.scale(player, (TILE_SIZE, TILE_SIZE))
-waall = image.load("images/waall.png")
-waall_img = transform.scale(waall, (TILE_SIZE, TILE_SIZE))
+
 
 #groops
 all_sprites = sprite.Group()
 all_labels = sprite.Group()
 walls = sprite.Group()
 
-
-camera_x, camera_y = 0, 0
 
 
 #class for text
@@ -62,7 +59,8 @@ class BaseSprite(sprite.Sprite):
 
     def draw(self, window):
         window.blit(self.image, self.rect)
-neew_movs = 0
+
+
 #class for player
 class Player(BaseSprite):
     def __init__(self, image, x, y, width, height):
@@ -77,21 +75,32 @@ class Player(BaseSprite):
         old_pos = self.rect.x, self.rect.y
         keys = key.get_pressed()
         if keys[K_a]:
-            camera_x -= self.speed
+           if self.rect.x <= WIDTH / 4:
+                for s in all_sprites:
+                    if s != self:
+                        s.rect.x += self.speed
+
         if keys[K_d]:
-            camera_x += self.speed
+            if self.rect.x >= WIDTH / 4:
+                for s in all_sprites:
+                    if s != self:
+                        s.rect.x -= self.speed
         if keys[K_w]:
-            camera_y -= self.speed
+            if self.rect.x <= HEIGHT / 4:
+                for s in all_sprites:
+                    if s != self:
+                        s.rect.y += self.speed
         if keys[K_s]:
-            camera_y += self.speed
+            if self.rect.x >= HEIGHT / 4:
+                for s in all_sprites:
+                    if s != self:
+                        s.rect.y -= self.speed
 
 
         #checking for collision with walls
         coll_list = sprite.spritecollide(self, walls, False, sprite.collide_mask)
-        if len(coll_list)>0:
+        if len(coll_list) > 0:
             self.rect.x, self.rect.y = old_pos
-
-
 
 
 
@@ -102,9 +111,10 @@ with open("map.txt", "r") as file:
         for row in map:
             for symbol in row:
                 if symbol == "w":
-                    walls.add(BaseSprite(wall_img, x + neew_movs, y, TILE_SIZE, TILE_SIZE))
+                    wall = BaseSprite(wall_img, x, y, TILE_SIZE, TILE_SIZE)
+                    walls.add(wall)
                 if symbol == "p":
-                    player = Player(player_img, x, y, TILE_SIZE, TILE_SIZE)
+                    player = Player(player_img, x, y, TILE_SIZE-10, TILE_SIZE-10)
                 x += TILE_SIZE 
             x = 0
             y += TILE_SIZE 
@@ -119,8 +129,7 @@ while run:
         if e.type == KEYDOWN:
             if e.key == K_ESCAPE:
                 run = False
-            if e.key == K_SPACE:
-                neew_movs += 10
+
             
 
 

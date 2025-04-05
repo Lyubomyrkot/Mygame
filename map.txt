@@ -3,10 +3,17 @@
         w                  w
         w                  w
         w                  w
+        w                  w
         w         p        w
         w                  w
         w                  w
         w                  w
-        w                  w
         wwwwwwwww  wwwwwwwww
-        w       w    w     w
+                w  w       
+        wwwwwwwww  wwwwwwwww wwwwwwwwwwwwwwwww
+        w                  w w               w
+        w                  www               w
+        w                   
+        w                  www               w 
+        w                  w w               w
+        wwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwww
