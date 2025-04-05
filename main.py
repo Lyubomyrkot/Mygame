@@ -91,11 +91,11 @@ class Player(BaseSprite):
             if self.rect.x >= WIDTH / 4:
                 shift_x -= self.speed
         if keys[K_w]:
-            if self.rect.y <= HEIGHT / 3:
+            if self.rect.y <= HEIGHT / 2:
                 shift_y += self.speed
         if keys[K_s]:
-            if self.rect.x >= HEIGHT / 4:
-                self.rect.y -= self.speed
+            if self.rect.y >= HEIGHT / 4:
+                shift_y -= self.speed
 
         move_map(shift_x, shift_y)
 
