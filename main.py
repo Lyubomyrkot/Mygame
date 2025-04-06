@@ -4,7 +4,7 @@ import random
 init()
 font.init()
 
-FONT = "Play-Bold.ttf"
+FONT = "Play-Regular.ttf"
 
 FPS = 60
 
@@ -18,17 +18,20 @@ clock = time.Clock()
 
 
 #sprite 
-wall = image.load("images/wall.png")
-wall_img = transform.scale(wall, (TILE_SIZE, TILE_SIZE))
+wall_img = image.load("images/wall.png")
+wall_img = transform.scale(wall_img, (TILE_SIZE, TILE_SIZE))
 
-player = image.load("images/player.png")
-player_img = transform.scale(player, (TILE_SIZE, TILE_SIZE))
+player_img = image.load("images/player.png")
+player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
 
+coin_img = image.load("images/coin.png")
+coin_img = transform.scale(coin_img, (TILE_SIZE, TILE_SIZE))
 
 #groops
 all_sprites = sprite.Group()
 all_labels = sprite.Group()
 walls = sprite.Group()
+coins = sprite.Group()
 
 
 
@@ -79,7 +82,7 @@ class Player(BaseSprite):
         self.left_image = transform.flip(self.image, True, False)
         self.speed = 4
         self.hp = 100
-        self.coins = 0
+        self.coins_counter = 0
 
     def update(self):
         shift_x, shift_y = 0, 0
@@ -100,6 +103,13 @@ class Player(BaseSprite):
 
         move_map(shift_x, shift_y)
 
+        coll_list = sprite.spritecollide(player, coins, True, sprite.collide_mask)
+        if len(coll_list) > 0:
+            self.coins_counter += 1
+            coins_label.set_text(f"Coins: {self.coins_counter}")
+
+
+
 
 #map loading
 with open("map.txt", "r") as file:
@@ -113,10 +123,14 @@ with open("map.txt", "r") as file:
                 if symbol == "p":
                     player = Player(player_img, x, y, TILE_SIZE-10, TILE_SIZE-10)
                     all_sprites.remove(player)
+                if symbol == "c":
+                    coins.add(BaseSprite(coin_img, x, y, TILE_SIZE/2, TILE_SIZE/2))
                 x += TILE_SIZE 
             x = 0
             y += TILE_SIZE 
 
+#labels
+coins_label = Label(f"Coins: {player.coins_counter}", 10, 10)
 
 run = True
 while run:
@@ -133,8 +147,8 @@ while run:
 
     #window.blit()
     all_sprites.draw(window)
-    all_labels.draw(window)
     player.draw(window)
     player.update()
+    all_labels.draw(window)
     display.update()
     clock.tick(FPS)
