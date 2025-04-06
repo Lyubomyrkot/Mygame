@@ -1,19 +1,18 @@
 
-        wwwwwwwwwwwwwwwwwwww
-        w           c      w
-        w                  w
-        w   c              w
-        w                  w
-        w                  w
-        w                  w
-        w        p         w
-        w                  w
-        wwwwwwwww  wwwwwwwww
-                w  w       
-        wwwwwwwww  wwwwwwwww wwwwwwwwwwwwwwwww
-        w                  w w               w
-        w                  www               w
-        w                   
-        w                  www               w 
-        w                  w w               w
-        wwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwww
+             wwwwwwwwwwwwww
+             w..........c.w
+             w............w
+             w............w
+             w....c.......w
+             w......p.....w
+             w....c.......w
+             w............w
+             wwwwwwbbwwwwww
+                  w..w
+             wwwwwwbbwwwwwwwwwwww wwwwwwwwwwwwwwwwwwww
+             w..................w w..................w
+             w..................www..................w
+             w......c...........b.b...................
+             w..................www..................w
+             w..................w w..................w
+             wwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwwwwww

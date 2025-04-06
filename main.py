@@ -18,8 +18,14 @@ clock = time.Clock()
 
 
 #sprite 
-wall_img = image.load("images/wall.png")
+wall_img = image.load("images/floor.jpg")
 wall_img = transform.scale(wall_img, (TILE_SIZE, TILE_SIZE))
+
+floor_img = image.load("images/wall.png")
+floor_img = transform.scale(floor_img, (TILE_SIZE, TILE_SIZE))
+
+block_img = image.load("images/block.png")
+block_img = transform.scale(block_img, (TILE_SIZE, TILE_SIZE))
 
 player_img = image.load("images/player.png")
 player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
@@ -89,10 +95,10 @@ class Player(BaseSprite):
         keys = key.get_pressed()
 
         if keys[K_a]:
-           if self.rect.x <= WIDTH / 2:
+           if self.rect.x <= WIDTH:
                 shift_x += self.speed
         if keys[K_d]:
-            if self.rect.x >= WIDTH / 4:
+            if self.rect.x >= WIDTH / 3:
                 shift_x -= self.speed
         if keys[K_w]:
             if self.rect.y <= HEIGHT / 2:
@@ -121,10 +127,17 @@ with open("map.txt", "r") as file:
                     wall = BaseSprite(wall_img, x, y, TILE_SIZE, TILE_SIZE)
                     walls.add(wall)
                 if symbol == "p":
+                    floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                     player = Player(player_img, x, y, TILE_SIZE-10, TILE_SIZE-10)
                     all_sprites.remove(player)
                 if symbol == "c":
+                    floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                     coins.add(BaseSprite(coin_img, x, y, TILE_SIZE/2, TILE_SIZE/2))
+                if symbol == ".":
+                    floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
+                if symbol == "b":
+                    block = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
+                 
                 x += TILE_SIZE 
             x = 0
             y += TILE_SIZE 
