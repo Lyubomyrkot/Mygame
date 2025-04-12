@@ -18,16 +18,16 @@ clock = time.Clock()
 
 
 #sprite 
-wall_img = image.load("images/floor.jpg")
+wall_img = image.load("images/wall.png")
 wall_img = transform.scale(wall_img, (TILE_SIZE, TILE_SIZE))
 
-floor_img = image.load("images/wall.png")
+floor_img = image.load("images/floor.png")
 floor_img = transform.scale(floor_img, (TILE_SIZE, TILE_SIZE))
 
 block_img = image.load("images/block.png")
 block_img = transform.scale(block_img, (TILE_SIZE, TILE_SIZE))
 
-player_img = image.load("images/player.png")
+player_img = image.load("images/player_down.png")
 player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
 
 coin_img = image.load("images/coin.png")
@@ -95,15 +95,23 @@ class Player(BaseSprite):
         keys = key.get_pressed()
 
         if keys[K_a]:
-           if self.rect.x <= WIDTH:
+            self.image = image.load("images/player_left.png")
+            self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
+            if self.rect.x <= WIDTH:
                 shift_x += self.speed
         if keys[K_d]:
+            self.image = image.load("images/player_right.png")
+            self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
             if self.rect.x >= WIDTH / 3:
                 shift_x -= self.speed
         if keys[K_w]:
+            self.image = image.load("images/player_up.png")
+            self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
             if self.rect.y <= HEIGHT / 2:
                 shift_y += self.speed
         if keys[K_s]:
+            self.image = image.load("images/player_down.png")
+            self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
             if self.rect.y >= HEIGHT / 4:
                 shift_y -= self.speed
 
@@ -128,7 +136,7 @@ with open("map.txt", "r") as file:
                     walls.add(wall)
                 if symbol == "p":
                     floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
-                    player = Player(player_img, x, y, TILE_SIZE-10, TILE_SIZE-10)
+                    player = Player(player_img, x, y, TILE_SIZE, TILE_SIZE)
                     all_sprites.remove(player)
                 if symbol == "c":
                     floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
