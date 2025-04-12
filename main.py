@@ -33,10 +33,10 @@ player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
 coin_img = image.load("images/coin.png")
 coin_img = transform.scale(coin_img, (TILE_SIZE, TILE_SIZE))
 
-health_img = image.load("images/health_full1.png")
+health_img = image.load("images/health_full.png")
 health_img = transform.scale(health_img, (TILE_SIZE, TILE_SIZE))
 
-health_half = image.load("images/health_half11.png")
+health_half = image.load("images/health_half.png")
 health_half = transform.scale(health_half, (TILE_SIZE, TILE_SIZE))
 
 health_zero = image.load("images/health_zero.png")
