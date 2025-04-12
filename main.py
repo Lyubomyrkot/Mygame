@@ -36,6 +36,12 @@ coin_img = transform.scale(coin_img, (TILE_SIZE, TILE_SIZE))
 health_img = image.load("images/health_full.png")
 health_img = transform.scale(health_img, (TILE_SIZE, TILE_SIZE))
 
+health_half = image.load("images/health_half.png")
+health_half = transform.scale(health_half, (TILE_SIZE, TILE_SIZE))
+
+health_zero = image.load("images/health_zero.png")
+health_zero = transform.scale(health_zero, (TILE_SIZE, TILE_SIZE))
+
 #groops
 all_sprites = sprite.Group()
 all_map_sprite = sprite.Group()
@@ -87,11 +93,6 @@ def move_map(shift_x= 0, shift_y=0):
             if now-player.damage_timer > 1000:
                 player.damage_timer = time.get_ticks()
                 player.hp -= 10
-                if player.hp == 90:
-                    health4 = image.load("images/health_half.png")
-                elif player.hp == 80:
-                    health4 = image.load("images/health_zero.png")
-
                 #health_label.set_text(f"Health: {player.hp}")
 
 #class for player
@@ -137,8 +138,31 @@ class Player(BaseSprite):
             self.coins_counter += 1
             coins_label.set_text(f"Coins: {self.coins_counter}")
 
-class Health(BaseSprite):
-    def __init__(self, image, x, y, width, height):
+class Health(sprite.Sprite):
+    def __init__(self, x, y, hp):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.hp = hp
+        self.full = health_img
+        self.half = health_half
+        self.zero = health_zero
+
+    def draw(self, window):
+        x = self.x
+        for i in range(0, 5):
+            current_hp = self.hp - i * 20
+            if current_hp >= 20:
+                window.blit(self.full, (x, y))
+            elif current_hp >= 10:
+                window.blit(self.half, (x, y))
+            else:
+                window.blit(self.zero, (x, y))
+            
+            x += TILE_SIZE + 5
+
+
+
 #map loading
 with open("map.txt", "r") as file:
         map = file.readlines()
@@ -168,7 +192,8 @@ with open("map.txt", "r") as file:
 
 #labels
 coins_label = Label(f"Coins: {player.coins_counter}", 10, 10)
-#health_label = Label(f"Health: {player.hp}", 10, 50)
+health_bar = Health(10, 50, player.hp)
+
 
 run = True
 while run:
@@ -188,5 +213,6 @@ while run:
     player.draw(window)
     player.update()
     all_labels.draw(window)
+    health_bar.draw(window)
     display.update()
     clock.tick(FPS)
