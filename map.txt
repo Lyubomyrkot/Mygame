@@ -7,12 +7,29 @@
              w......p.....w
              w....c.......w
              w............w
-             wwwwwwbbwwwwww
+             wwwwww..wwwwww
                   w..w
-             wwwwwwbbwwwwwwwwwwww wwwwwwwwwwwwwwwwwwww
-             w..................w w..................w
-             w..................www..................w
-             w......c...........b.b...................
-             w..................www..................w
-             w..................w w..................w
-             wwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwwwwww
+                  w..w
+                  w..w
+          wwwwwwwww..wwwwwwwww   wwwwwwwwwwwwwwwwwwww
+          w..................w   w..................w
+          w..................wwwww..................w
+          w.........c...............................w
+          w.........................................w
+          w..................wwwww..................w
+          w..................w   w..................w
+          wwwwwwwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww
+                                         w..w   
+                                         w..w
+                                         w..w    
+               wwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww
+               w.............w   w..................w
+               w.............wwwww..................w
+               w....................................w
+               w....................................w
+               w.............wwwww..................w
+               w.............w   w..................w
+               w.............w   wwwwwwwwwwwwwwwwwwww
+               w.............w
+               w.............w
+               wwwwwwwwwwwwwww

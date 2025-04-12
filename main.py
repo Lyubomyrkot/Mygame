@@ -33,8 +33,12 @@ player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
 coin_img = image.load("images/coin.png")
 coin_img = transform.scale(coin_img, (TILE_SIZE, TILE_SIZE))
 
+health_img = image.load("images/health_full.png")
+health_img = transform.scale(health_img, (TILE_SIZE, TILE_SIZE))
+
 #groops
 all_sprites = sprite.Group()
+all_map_sprite = sprite.Group()
 all_labels = sprite.Group()
 walls = sprite.Group()
 coins = sprite.Group()
@@ -70,15 +74,25 @@ class BaseSprite(sprite.Sprite):
         window.blit(self.image, self.rect)
 
 def move_map(shift_x= 0, shift_y=0):
-    for s in all_sprites:
+    for s in all_map_sprite:
         s.rect.x += shift_x
         s.rect.y += shift_y
     #checking for collision with walls
     coll_list = sprite.spritecollide(player, walls, False, sprite.collide_mask)
     if len(coll_list)>0:
-        for s in all_sprites:
+        for s in all_map_sprite:
             s.rect.x -= shift_x
             s.rect.y -= shift_y
+            now = time.get_ticks()
+            if now-player.damage_timer > 1000:
+                player.damage_timer = time.get_ticks()
+                player.hp -= 10
+                if player.hp == 90:
+                    health4 = image.load("images/health_half.png")
+                elif player.hp == 80:
+                    health4 = image.load("images/health_zero.png")
+
+                #health_label.set_text(f"Health: {player.hp}")
 
 #class for player
 class Player(BaseSprite):
@@ -89,6 +103,7 @@ class Player(BaseSprite):
         self.speed = 4
         self.hp = 100
         self.coins_counter = 0
+        self.damage_timer = time.get_ticks()
 
     def update(self):
         shift_x, shift_y = 0, 0
@@ -122,36 +137,38 @@ class Player(BaseSprite):
             self.coins_counter += 1
             coins_label.set_text(f"Coins: {self.coins_counter}")
 
-
-
-
+class Health(BaseSprite):
+    def __init__(self, image, x, y, width, height):
 #map loading
 with open("map.txt", "r") as file:
         map = file.readlines()
         x, y = 0, 0
         for row in map:
             for symbol in row:
+                map_object = None
                 if symbol == "w":
-                    wall = BaseSprite(wall_img, x, y, TILE_SIZE, TILE_SIZE)
-                    walls.add(wall)
+                    map_object = BaseSprite(wall_img, x, y, TILE_SIZE, TILE_SIZE)
+                    walls.add(map_object)
                 if symbol == "p":
-                    floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
+                    map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                     player = Player(player_img, x, y, TILE_SIZE, TILE_SIZE)
-                    all_sprites.remove(player)
                 if symbol == "c":
-                    floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
-                    coins.add(BaseSprite(coin_img, x, y, TILE_SIZE/2, TILE_SIZE/2))
+                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                    map_object = BaseSprite(coin_img, x, y, TILE_SIZE/2, TILE_SIZE/2)
+                    coins.add(map_object)
                 if symbol == ".":
-                    floor = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
+                    map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                 if symbol == "b":
-                    block = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
-                 
+                    map_object = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
+                if map_object:
+                    all_map_sprite.add(map_object)
                 x += TILE_SIZE 
             x = 0
             y += TILE_SIZE 
 
 #labels
 coins_label = Label(f"Coins: {player.coins_counter}", 10, 10)
+#health_label = Label(f"Health: {player.hp}", 10, 50)
 
 run = True
 while run:
