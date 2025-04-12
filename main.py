@@ -33,14 +33,17 @@ player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
 coin_img = image.load("images/coin.png")
 coin_img = transform.scale(coin_img, (TILE_SIZE, TILE_SIZE))
 
-health_img = image.load("images/health_full.png")
+health_img = image.load("images/health_full1.png")
 health_img = transform.scale(health_img, (TILE_SIZE, TILE_SIZE))
 
-health_half = image.load("images/health_half.png")
+health_half = image.load("images/health_half11.png")
 health_half = transform.scale(health_half, (TILE_SIZE, TILE_SIZE))
 
 health_zero = image.load("images/health_zero.png")
 health_zero = transform.scale(health_zero, (TILE_SIZE, TILE_SIZE))
+
+hp_help_img = image.load("images/hp_help.png")
+hp_help_img = transform.scale(hp_help_img, (TILE_SIZE, TILE_SIZE))
 
 #groops
 all_sprites = sprite.Group()
@@ -48,6 +51,7 @@ all_map_sprite = sprite.Group()
 all_labels = sprite.Group()
 walls = sprite.Group()
 coins = sprite.Group()
+hp_helpers = sprite.Group()
 
 
 
@@ -89,11 +93,11 @@ def move_map(shift_x= 0, shift_y=0):
         for s in all_map_sprite:
             s.rect.x -= shift_x
             s.rect.y -= shift_y
-            now = time.get_ticks()
-            if now-player.damage_timer > 1000:
-                player.damage_timer = time.get_ticks()
-                player.hp -= 10
-                #health_label.set_text(f"Health: {player.hp}")
+        now = time.get_ticks()
+        if now-player.damage_timer > 1000:
+            player.damage_timer = time.get_ticks()
+            player.hp -= 10
+            health_bar.hp = player.hp
 
 #class for player
 class Player(BaseSprite):
@@ -138,6 +142,13 @@ class Player(BaseSprite):
             self.coins_counter += 1
             coins_label.set_text(f"Coins: {self.coins_counter}")
 
+        coll_list = sprite.spritecollide(player, hp_helpers, True, sprite.collide_mask)
+        if len(coll_list) > 0:
+            self.hp += 20
+            if self.hp > 100:
+                self.hp = 100
+            health_bar.hp = self.hp
+
 class Health(sprite.Sprite):
     def __init__(self, x, y, hp):
         super().__init__()
@@ -153,11 +164,11 @@ class Health(sprite.Sprite):
         for i in range(0, 5):
             current_hp = self.hp - i * 20
             if current_hp >= 20:
-                window.blit(self.full, (x, y))
+                window.blit(self.full, (x, self.y))
             elif current_hp >= 10:
-                window.blit(self.half, (x, y))
+                window.blit(self.half, (x, self.y))
             else:
-                window.blit(self.zero, (x, y))
+                window.blit(self.zero, (x, self.y))
             
             x += TILE_SIZE + 5
 
@@ -178,12 +189,16 @@ with open("map.txt", "r") as file:
                     player = Player(player_img, x, y, TILE_SIZE, TILE_SIZE)
                 if symbol == "c":
                     all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    map_object = BaseSprite(coin_img, x, y, TILE_SIZE/2, TILE_SIZE/2)
+                    map_object = BaseSprite(coin_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
                     coins.add(map_object)
                 if symbol == ".":
                     map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                 if symbol == "b":
                     map_object = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
+                if symbol == "h":
+                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                    map_object = BaseSprite(hp_help_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
+                    hp_helpers.add(map_object)
                 if map_object:
                     all_map_sprite.add(map_object)
                 x += TILE_SIZE 
@@ -191,8 +206,8 @@ with open("map.txt", "r") as file:
             y += TILE_SIZE 
 
 #labels
-coins_label = Label(f"Coins: {player.coins_counter}", 10, 10)
-health_bar = Health(10, 50, player.hp)
+coins_label = Label(f"Coins: {player.coins_counter}", 10, 60)
+health_bar = Health(10, 10, player.hp)
 
 
 run = True
