@@ -45,6 +45,10 @@ health_zero = transform.scale(health_zero, (TILE_SIZE, TILE_SIZE))
 hp_help_img = image.load("images/hp_help.png")
 hp_help_img = transform.scale(hp_help_img, (TILE_SIZE, TILE_SIZE))
 
+menu_img = image.load("images/menu.png")
+
+
+
 #groops
 all_sprites = sprite.Group()
 all_map_sprite = sprite.Group()
@@ -70,6 +74,15 @@ class Label(sprite.Sprite):
     def set_text(self, new_text,color=(255, 255, 255)):
         self.image = self.font.render(new_text, True, color)
 
+
+class Area(sprite.Sprite):
+    def __init__(self, image, x, y, width, height):
+        super().__init__()
+        self.image = image
+        self.rect = Rect(x, y, width, height)
+
+    def draw(self, window):
+        window.blit(self.image, self.rect)
 
 #class for sprites
 class BaseSprite(sprite.Sprite):
@@ -209,25 +222,54 @@ with open("map.txt", "r") as file:
 coins_label = Label(f"Coins: {player.coins_counter}", 10, 60)
 health_bar = Health(10, 10, player.hp)
 
+menu = Area(menu_img, 550, 185, WIDTH, HEIGHT)
+play_btn = Rect(622, 260, 150, 38)
 
+
+screen = "menu"
 run = True
 while run:
-    window.fill((0, 0, 0))
-    for e in event.get():
-        if e.type == QUIT:
-            run = False
-        if e.type == KEYDOWN:
-            if e.key == K_ESCAPE:
+    if screen == "game":
+        window.fill((0, 0, 0))
+        for e in event.get():
+            if e.type == QUIT:
                 run = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    run = False
+                if e.key == K_r:
+                    screen = "menu"
+
+        all_sprites.draw(window)
+        player.draw(window)
+        player.update()
+        all_labels.draw(window)
+        health_bar.draw(window)
+
+    if screen == "menu":
+        window.fill((82, 99, 115))
+        for e in event.get():
+            if e.type == QUIT:
+                run = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    run = False
+                if e.key == K_r:
+                    screen = "game"
+            if e.type == MOUSEBUTTONDOWN:
+                x, y = mouse.get_pos()
+                print(x, y)
+                if play_btn.collidepoint(x, y):
+                    screen = "game"
+
+                
+        menu.draw(window)
+
 
             
 
 
     #window.blit()
-    all_sprites.draw(window)
-    player.draw(window)
-    player.update()
-    all_labels.draw(window)
-    health_bar.draw(window)
+    
     display.update()
     clock.tick(FPS)
