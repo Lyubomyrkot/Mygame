@@ -46,7 +46,10 @@ hp_help_img = image.load("images/hp_help.png")
 hp_help_img = transform.scale(hp_help_img, (TILE_SIZE, TILE_SIZE))
 
 menu_img = image.load("images/menu.png")
+stop_menu_img = image.load("images/stop_menu.png")
 
+stop_btn_img = image.load("images/stop_btn.png")
+stop_btn_img = transform.scale(stop_btn_img, (TILE_SIZE, TILE_SIZE))
 
 
 #groops
@@ -222,9 +225,19 @@ with open("map.txt", "r") as file:
 coins_label = Label(f"Coins: {player.coins_counter}", 10, 60)
 health_bar = Health(10, 10, player.hp)
 
+stop_btn = BaseSprite(stop_btn_img, WIDTH-TILE_SIZE-5, 5, TILE_SIZE, TILE_SIZE)
+stop_btn = Rect(WIDTH-TILE_SIZE-5, 5, TILE_SIZE, TILE_SIZE)
+
 menu = Area(menu_img, 550, 185, WIDTH, HEIGHT)
 play_btn = Rect(622, 260, 150, 38)
+exit_btn = Rect(622, 499, 150, 38)
+shop_btn = Rect(622, 340, 150, 38)
+options_btn = Rect(622, 420, 150, 38)
 
+stop_menu = Area(stop_menu_img, 550, 185, WIDTH, HEIGHT)
+continue_btn = Rect(632, 308, 150, 38)
+restart_btn = Rect(632, 388, 150, 38)
+exit_stop_btn = Rect(632, 468, 150, 38)
 
 screen = "menu"
 run = True
@@ -236,9 +249,11 @@ while run:
                 run = False
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
-                    run = False
-                if e.key == K_r:
-                    screen = "menu"
+                    screen = "stop"
+            if e.type == MOUSEBUTTONDOWN:
+                x, y = mouse.get_pos()
+                if stop_btn.collidepoint(x, y):
+                    screen = "stop"
 
         all_sprites.draw(window)
         player.draw(window)
@@ -254,16 +269,66 @@ while run:
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
                     run = False
-                if e.key == K_r:
-                    screen = "game"
             if e.type == MOUSEBUTTONDOWN:
                 x, y = mouse.get_pos()
                 print(x, y)
                 if play_btn.collidepoint(x, y):
                     screen = "game"
 
-                
+                if shop_btn.collidepoint(x, y):
+                    screen = "shop"
+
+                if options_btn.collidepoint(x, y):
+                    screen = "options"
+
+                if exit_btn.collidepoint(x, y):
+                    run = False
+
+
         menu.draw(window)
+    if screen == "shop":
+        window.fill((122, 199, 215))
+        for e in event.get():
+            if e.type == QUIT:
+                run = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    screen = "menu"
+
+
+    if screen == "options":
+        window.fill((182, 49, 195))
+        for e in event.get():
+            if e.type == QUIT:
+                run = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    screen = "menu"
+
+    if screen == "stop":
+        window.fill((82, 99, 115))
+        for e in event.get():
+            if e.type == QUIT:
+                run = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    run = False
+            if e.type == MOUSEBUTTONDOWN:
+                x, y = mouse.get_pos()
+                print(x, y)
+                if continue_btn.collidepoint(x, y):
+                    screen = "game"
+
+                if restart_btn.collidepoint(x, y):
+                    screen = "shop"
+
+                if exit_stop_btn.collidepoint(x, y):
+                    run = False
+            
+        stop_menu.draw(window)
+
+                
+
 
 
             
