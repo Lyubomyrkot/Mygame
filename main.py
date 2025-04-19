@@ -215,6 +215,7 @@ class Enemy(BaseSprite):
         self.hp = 20
         self.damage = 10
         self.damage_timer = time.get_ticks()
+        all_sprites.remove(self)
     
     def attack(self, player):
         now = time.get_ticks()
