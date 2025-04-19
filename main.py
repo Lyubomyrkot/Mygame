@@ -1,5 +1,5 @@
 from pygame import *
-import random 
+import random
 
 init()
 font.init()
@@ -55,8 +55,11 @@ stop_btn_img = transform.scale(stop_btn_img, (TILE_SIZE, TILE_SIZE))
 enemy_tree_img = image.load("images/enemy_tree.png")
 enemy_tree_img = transform.scale(enemy_tree_img, (TILE_SIZE, TILE_SIZE))
 
-enemy_sckelet_img = image.load("images/enemy_sckelet.png")
-enemy_sckelet_img = transform.scale(enemy_sckelet_img, (TILE_SIZE, TILE_SIZE))
+enemy_skeleton_img = image.load("images/enemy_skeleton.png")
+enemy_skeleton_img = transform.scale(enemy_skeleton_img, (TILE_SIZE, TILE_SIZE))
+
+enemy_zombie_img = image.load("images/enemy_zombie.png")
+enemy_zombie_img = transform.scale(enemy_zombie_img, (TILE_SIZE, TILE_SIZE))
 
 #groops
 all_sprites = sprite.Group()
@@ -171,11 +174,11 @@ class Player(BaseSprite):
             for s in all_map_sprite:
                 s.rect.x -= shift_x
                 s.rect.y -= shift_y
-            now = time.get_ticks()
-            if now - player.damage_timer > 1000:
-                player.damage_timer = time.get_ticks()
-                player.hp -= 10
-                health_bar.hp = player.hp
+            #now = time.get_ticks()
+            #if now - player.damage_timer > 1000:
+                #player.damage_timer = time.get_ticks()
+                #player.hp -= 10
+                #health_bar.hp = player.hp
 
 class Health(sprite.Sprite):
     def __init__(self, x, y, hp):
@@ -206,11 +209,23 @@ class Enemy(BaseSprite):
         super().__init__(image, x, y, width, height)
         self.right_image = self.image
         self.left_image = transform.flip(self.image, True, False)
-        self.speed = 2
         self.dir_list = ['left', 'right', 'up', 'down']
         self.dir = random.choice(self.dir_list)
+        self.speed = 2
+        self.hp = 20
+        self.damage = 10
+        self.damage_timer = time.get_ticks()
+    
+    def attack(self, player):
+        now = time.get_ticks()
+        if self.rect.colliderect(player.rect) and now - self.damage_timer > 1000:
+            print("attack")
+            self.damage_timer = time.get_ticks()
+            player.hp -= self.damage
+            health_bar.hp = player.hp
+            print("-10")
 
-    def update(self):
+    def update(self, player):
         old_pos = self.rect.x, self.rect.y
 
         if self.dir == 'up':
@@ -228,6 +243,49 @@ class Enemy(BaseSprite):
         if len(coll_list)>0:
             self.rect.x, self.rect.y = old_pos
             self.dir = random.choice(self.dir_list)
+
+    
+
+
+class SkeletonEnemy(Enemy):
+    def __init__(self, x, y, width, height):
+        super().__init__(enemy_skeleton_img, x, y, width, height)
+        self.hp = 40
+        self.damage = 10
+        self.speed = 2
+        self.dir_list = ['left', 'right', 'up', 'down']
+        self.dir = random.choice(self.dir_list)
+    
+    def update(self, player):
+        old_pos = self.rect.x, self.rect.y
+
+        if self.dir == 'up':
+            self.rect.y -= self.speed
+        elif self.dir == 'down':
+            self.rect.y += self.speed
+        elif self.dir == 'left':
+            self.rect.x -= self.speed
+            self.image = self.left_image
+        elif self.dir == 'right':
+            self.rect.x += self.speed
+            self.image = self.right_image
+
+        coll_list = sprite.spritecollide(self, walls, False)
+        if len(coll_list)>0:
+            self.rect.x, self.rect.y = old_pos
+            self.dir = random.choice(self.dir_list)
+        
+        self.attack(player)
+
+class ZombieEnemy(Enemy):
+    def __init__(self, x, y, width, height):
+        super().__init__(enemy_zombie_img, x, y, width, height)
+        self.hp = 20
+        self.damage = 10
+        self.speed = 2
+        self.dir_list = ['left', 'right', 'up', 'down']
+        self.dir = random.choice(self.dir_list)
+
 
 #map loading
 with open("map.txt", "r") as file:
@@ -256,7 +314,7 @@ with open("map.txt", "r") as file:
                     hp_helpers.add(map_object)
                 if symbol == "e":
                     all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    map_object = Enemy(enemy_sckelet_img, x, y, TILE_SIZE, TILE_SIZE)
+                    map_object = SkeletonEnemy( x, y, TILE_SIZE, TILE_SIZE)
                     enemies.add(map_object)
                 if map_object:
                     all_map_sprite.add(map_object)
@@ -303,7 +361,9 @@ while run:
         player.update()
         all_labels.draw(window)
         health_bar.draw(window)
-        enemies.update()
+        enemies.draw(window)
+        for enemy in enemies:
+            enemy.update(player)
 
     if screen == "menu":
         window.fill((82, 99, 115))
