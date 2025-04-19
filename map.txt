@@ -14,12 +14,12 @@
           wwwwwwwww..wwwwwwwww   wwwwwwwwwwwwwwwwwwww
           w..................w   w..................w
           w..............e...wwwww..................w
-          w.........c...............................w
-          w.........................................w
-          w.......e..........wwwww..................w
+          w.........c...................e...........w
+          w....................e....................w
+          w.......e..........wwwww........e.........w
           w..................w   w..................w
           wwwwwwwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww
-                                         w..w   
+                                         we.w   
                                          w..w
                                          w..w    
                wwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww

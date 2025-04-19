@@ -27,19 +27,19 @@ floor_img = transform.scale(floor_img, (TILE_SIZE, TILE_SIZE))
 block_img = image.load("images/block.png")
 block_img = transform.scale(block_img, (TILE_SIZE, TILE_SIZE))
 
-player_img = image.load("images/player_down.png")
+player_img = image.load("images/player/player_down.png")
 player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
 
 coin_img = image.load("images/coin.png")
 coin_img = transform.scale(coin_img, (TILE_SIZE, TILE_SIZE))
 
-health_img = image.load("images/health_full.png")
+health_img = image.load("images/health/health_full.png")
 health_img = transform.scale(health_img, (TILE_SIZE, TILE_SIZE))
 
-health_half = image.load("images/health_half.png")
+health_half = image.load("images/health/health_half.png")
 health_half = transform.scale(health_half, (TILE_SIZE, TILE_SIZE))
 
-health_zero = image.load("images/health_zero.png")
+health_zero = image.load("images/health/health_zero.png")
 health_zero = transform.scale(health_zero, (TILE_SIZE, TILE_SIZE))
 
 hp_help_img = image.load("images/hp_help.png")
@@ -52,13 +52,13 @@ stop_btn_img = image.load("images/stop_btn.png")
 stop_btn_img = transform.scale(stop_btn_img, (TILE_SIZE, TILE_SIZE))
 
 
-enemy_tree_img = image.load("images/enemy_tree.png")
+enemy_tree_img = image.load("images/enemies/enemy_tree.png")
 enemy_tree_img = transform.scale(enemy_tree_img, (TILE_SIZE, TILE_SIZE))
 
-enemy_skeleton_img = image.load("images/enemy_skeleton.png")
+enemy_skeleton_img = image.load("images/enemies/enemy_skeleton.png")
 enemy_skeleton_img = transform.scale(enemy_skeleton_img, (TILE_SIZE, TILE_SIZE))
 
-enemy_zombie_img = image.load("images/enemy_zombie.png")
+enemy_zombie_img = image.load("images/enemies/enemy_zombie.png")
 enemy_zombie_img = transform.scale(enemy_zombie_img, (TILE_SIZE, TILE_SIZE))
 
 #groops
@@ -135,22 +135,22 @@ class Player(BaseSprite):
         keys = key.get_pressed()
 
         if keys[K_a]:
-            self.image = image.load("images/player_left.png")
+            self.image = image.load("images/player/player_left.png")
             self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
             if self.rect.x <= WIDTH:
                 shift_x += self.speed
         if keys[K_d]:
-            self.image = image.load("images/player_right.png")
+            self.image = image.load("images/player/player_right.png")
             self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
             if self.rect.x >= WIDTH / 3:
                 shift_x -= self.speed
         if keys[K_w]:
-            self.image = image.load("images/player_up.png")
+            self.image = image.load("images/player/player_up.png")
             self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
             if self.rect.y <= HEIGHT / 2:
                 shift_y += self.speed
         if keys[K_s]:
-            self.image = image.load("images/player_down.png")
+            self.image = image.load("images/player/player_down.png")
             self.image = transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
             if self.rect.y >= HEIGHT / 4:
                 shift_y -= self.speed
@@ -417,20 +417,10 @@ with open("map.txt", "r") as file:
                     map_object = BaseSprite(hp_help_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
                     hp_helpers.add(map_object)
                 if symbol == "e":
-                    for i in range(0, 3):
-                        enemy_type = random.choice([SkeletonEnemy, ZombieEnemy, TreeEnemy])
-                        all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                        map_object = enemy_type(x, y, TILE_SIZE, TILE_SIZE)
-                        #map_object = SkeletonEnemy(x, y, TILE_SIZE, TILE_SIZE)
-                        enemies.add(map_object)
-                #if symbol == "z":
-                    #all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    #map_object = ZombieEnemy(x, y, TILE_SIZE, TILE_SIZE)
-                    #enemies.add(map_object)
-                #if symbol == "t":
-                    #all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    #map_object = TreeEnemy(x, y, TILE_SIZE, TILE_SIZE)
-                    #enemies.add(map_object)
+                    enemy_type = random.choice([SkeletonEnemy, ZombieEnemy, TreeEnemy])
+                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                    map_object = enemy_type(x, y, TILE_SIZE, TILE_SIZE)
+                    enemies.add(map_object)
                 if map_object:
                     all_map_sprite.add(map_object)
                 x += TILE_SIZE 
