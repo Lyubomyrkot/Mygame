@@ -331,7 +331,64 @@ class ZombieEnemy(Enemy):
             player.hp -= self.damage
             health_bar.hp = player.hp
             self.last_attack_time = now
+    
 
+
+class TreeEnemy(Enemy):
+    def __init__(self, x, y, width, height):
+        super().__init__(enemy_tree_img, x, y, width, height)
+        self.dir_list = ['left', 'right', 'up', 'down']
+        self.dir = random.choice(self.dir_list)
+        self.change_dir_timer = time.get_ticks()
+        self.change_dir_timer_interval = 1000
+        self.attack_cooldown = 2000
+        self.last_attack_time = 0
+
+        self.speed = 1
+        self.hp = 50
+        self.damage = 20
+
+    def update(self, player):
+        now = time.get_ticks()
+        dx = self.rect.centerx - player.rect.centerx
+        dy = self.rect.centery - player.rect.centery
+        distance_sq = dx ** 2 + dy ** 2
+
+        if distance_sq < 30 ** 2 and now - self.last_attack_time > self.attack_cooldown:
+            player.hp -= self.damage
+            health_bar.hp = player.hp
+            self.last_attack_time = now
+
+        if distance_sq < 100 ** 2:
+            if now - self.change_dir_timer > self.change_dir_timer_interval:
+                self.change_dir_timer = now
+                self.dir = random.choice(self.dir_list)
+        
+            if self.dir == 'up':
+                self.rect.y -= self.speed
+                if len(sprite.spritecollide(self, walls, False)) > 0:
+                    self.rect.y += self.speed
+                    self.dir = random.choice(self.dir_list)
+
+            elif self.dir == 'down':
+                self.rect.y += self.speed
+                if len(sprite.spritecollide(self, walls, False)) > 0:
+                    self.rect.y -= self.speed
+                    self.dir = random.choice(self.dir_list)
+
+            elif self.dir == 'left':
+                self.rect.x -= self.speed
+                self.image = self.left_image
+                if len(sprite.spritecollide(self, walls, False)) > 0:
+                    self.rect.x += self.speed
+                    self.dir = random.choice(self.dir_list)
+
+            elif self.dir == 'right':
+                self.rect.x += self.speed
+                self.image = self.right_image
+                if len(sprite.spritecollide(self, walls, False)) > 0:
+                    self.rect.x -= self.speed
+                    self.dir = random.choice(self.dir_list)
 
 
 #map loading
@@ -360,15 +417,20 @@ with open("map.txt", "r") as file:
                     map_object = BaseSprite(hp_help_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
                     hp_helpers.add(map_object)
                 if symbol == "e":
-                    #enemy_type = random.choice([SkeletonEnemy, ZombieEnemy])
-                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    #map_object = enemy_type(x, y, TILE_SIZE, TILE_SIZE)
-                    map_object = SkeletonEnemy(x, y, TILE_SIZE, TILE_SIZE)
-                    enemies.add(map_object)
-                if symbol == "z":
-                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    map_object = ZombieEnemy(x, y, TILE_SIZE, TILE_SIZE)
-                    enemies.add(map_object)
+                    for i in range(0, 3):
+                        enemy_type = random.choice([SkeletonEnemy, ZombieEnemy, TreeEnemy])
+                        all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                        map_object = enemy_type(x, y, TILE_SIZE, TILE_SIZE)
+                        #map_object = SkeletonEnemy(x, y, TILE_SIZE, TILE_SIZE)
+                        enemies.add(map_object)
+                #if symbol == "z":
+                    #all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                    #map_object = ZombieEnemy(x, y, TILE_SIZE, TILE_SIZE)
+                    #enemies.add(map_object)
+                #if symbol == "t":
+                    #all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                    #map_object = TreeEnemy(x, y, TILE_SIZE, TILE_SIZE)
+                    #enemies.add(map_object)
                 if map_object:
                     all_map_sprite.add(map_object)
                 x += TILE_SIZE 
