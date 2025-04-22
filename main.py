@@ -174,11 +174,6 @@ class Player(BaseSprite):
             for s in all_map_sprite:
                 s.rect.x -= shift_x
                 s.rect.y -= shift_y
-            #now = time.get_ticks()
-            #if now - player.damage_timer > 1000:
-                #player.damage_timer = time.get_ticks()
-                #player.hp -= 10
-                #health_bar.hp = player.hp
 
 class Health(sprite.Sprite):
     def __init__(self, x, y, hp):
@@ -392,40 +387,58 @@ class TreeEnemy(Enemy):
 
 
 #map loading
-with open("map.txt", "r") as file:
-        map = file.readlines()
-        x, y = 0, 0
-        for row in map:
-            for symbol in row:
-                map_object = None
-                if symbol == "w":
-                    map_object = BaseSprite(wall_img, x, y, TILE_SIZE, TILE_SIZE)
-                    walls.add(map_object)
-                if symbol == "p":
-                    map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
-                    player = Player(player_img, x, y, TILE_SIZE, TILE_SIZE)
-                if symbol == "c":
-                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    map_object = BaseSprite(coin_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
-                    coins.add(map_object)
-                if symbol == ".":
-                    map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
-                if symbol == "b":
-                    map_object = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
-                if symbol == "h":
-                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    map_object = BaseSprite(hp_help_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
-                    hp_helpers.add(map_object)
-                if symbol == "e":
-                    enemy_type = random.choice([SkeletonEnemy, ZombieEnemy, TreeEnemy])
-                    all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
-                    map_object = enemy_type(x, y, TILE_SIZE, TILE_SIZE)
-                    enemies.add(map_object)
-                if map_object:
-                    all_map_sprite.add(map_object)
-                x += TILE_SIZE 
-            x = 0
-            y += TILE_SIZE 
+def game_start():
+    global player, screen, run, all_map_sprite, all_sprites, walls, coins, hp_helpers, enemies
+
+    all_map_sprite.empty()
+    all_sprites.empty()
+    walls.empty()
+    coins.empty()
+    hp_helpers.empty()
+    enemies.empty()
+
+
+    run = True
+    
+
+    with open("map.txt", "r") as file:
+            map = file.readlines()
+            x, y = 0, 0
+            for row in map:
+                for symbol in row:
+                    map_object = None
+                    if symbol == "w":
+                        map_object = BaseSprite(wall_img, x, y, TILE_SIZE, TILE_SIZE)
+                        walls.add(map_object)
+                    if symbol == "p":
+                        map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
+                        player = Player(player_img, x, y, TILE_SIZE, TILE_SIZE)
+                        player.hp = 100
+                        player.coins_counter = 0
+                    if symbol == "c":
+                        all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                        map_object = BaseSprite(coin_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
+                        coins.add(map_object)
+                    if symbol == ".":
+                        map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
+                    if symbol == "b":
+                        map_object = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
+                    if symbol == "h":
+                        all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                        map_object = BaseSprite(hp_help_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
+                        hp_helpers.add(map_object)
+                    if symbol == "e":
+                        enemy_type = random.choice([SkeletonEnemy, ZombieEnemy, TreeEnemy])
+                        all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                        map_object = enemy_type(x, y, TILE_SIZE, TILE_SIZE)
+                        enemies.add(map_object)
+                    if map_object:
+                        all_map_sprite.add(map_object)
+                    x += TILE_SIZE 
+                x = 0
+                y += TILE_SIZE 
+
+game_start()
 
 #labels
 coins_label = Label(f"Coins: {player.coins_counter}", 10, 60)
@@ -446,7 +459,7 @@ restart_btn = Rect(632, 388, 150, 38)
 exit_stop_btn = Rect(632, 468, 150, 38)
 
 screen = "menu"
-run = True
+
 while run:
     if screen == "game":
         window.fill((0, 0, 0))
@@ -456,6 +469,8 @@ while run:
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
                     screen = "stop"
+                
+
             if e.type == MOUSEBUTTONDOWN:
                 x, y = mouse.get_pos()
                 if stop_btn.collidepoint(x, y):
@@ -470,6 +485,10 @@ while run:
         for enemy in enemies:
             enemy.update(player)
 
+        if player.hp <= 0:
+            screen = "stop"
+            player.kill()
+
     if screen == "menu":
         window.fill((82, 99, 115))
         for e in event.get():
@@ -483,6 +502,9 @@ while run:
                 print(x, y)
                 if play_btn.collidepoint(x, y):
                     screen = "game"
+                    game_start()
+                    coins_label.set_text(f"Coins: {player.coins_counter}")
+                    health_bar.hp = player.hp
 
                 if shop_btn.collidepoint(x, y):
                     screen = "shop"
@@ -529,7 +551,10 @@ while run:
                     screen = "game"
 
                 if restart_btn.collidepoint(x, y):
-                    screen = "shop"
+                    game_start()
+                    coins_label.set_text(f"Coins: {player.coins_counter}")
+                    health_bar.hp = player.hp
+                    screen = "game"
 
                 if exit_stop_btn.collidepoint(x, y):
                     run = False
