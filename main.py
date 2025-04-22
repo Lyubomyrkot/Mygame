@@ -3,6 +3,7 @@ import random
 
 init()
 font.init()
+mixer.init()
 
 FONT = "Play-Regular.ttf"
 
@@ -70,6 +71,14 @@ coins = sprite.Group()
 hp_helpers = sprite.Group()
 enemies = sprite.Group()
 
+#завантаження музики
+mixer.music.load("audio/background_music.mp3")
+mixer.music.set_volume(0.2)
+mixer.music.play()
+
+damage_sound = mixer.Sound("audio/player_sword_swing.mp3")
+money_sound = mixer.Sound("audio/coin_pickup.mp3")
+health_sound = mixer.Sound("audio/potion_drink.mp3")
 
 #class for text
 class Label(sprite.Sprite):
@@ -161,11 +170,13 @@ class Player(BaseSprite):
         coll_list = sprite.spritecollide(player, coins, True, sprite.collide_mask)
         if len(coll_list) > 0:
             self.coins_counter += 1
+            money_sound.play()
             coins_label.set_text(f"Coins: {self.coins_counter}")
 
         coll_list = sprite.spritecollide(player, hp_helpers, True, sprite.collide_mask)
         if len(coll_list) > 0:
             self.hp += 20
+            health_sound.play()
             if self.hp > 100:
                 self.hp = 100
             health_bar.hp = self.hp
@@ -180,6 +191,7 @@ class Player(BaseSprite):
         for enemy in enemies_group:
             if self.rect.colliderect(enemy.rect):  # Перевірка зіткнення
                 enemy.hp -= self.damage
+                damage_sound.play()
                 if enemy.hp <= 0:
                     enemy.kill()
 
@@ -405,7 +417,7 @@ def game_start():
     hp_helpers.empty()
     enemies.empty()
 
-
+    mixer.music.play()
     run = True
     
 
@@ -498,6 +510,7 @@ while run:
        
 
         if player.hp <= 0:
+            mixer.music.stop()
             screen = "stop"
             player.kill()
 
