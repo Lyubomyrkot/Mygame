@@ -78,9 +78,10 @@ mixer.music.load("audio/background_music1.mp3")
 mixer.music.set_volume(0.2)
 mixer.music.play()
 
-damage_sound = mixer.Sound("audio/player_sword_swing.mp3")
-money_sound = mixer.Sound("audio/coin_pickup.mp3")
+damage_sound = mixer.Sound("audio/player_damage.mp3")
+money_sound = mixer.Sound("audio/coin_collect.mp3")
 health_sound = mixer.Sound("audio/potion_drink.mp3")
+kill_enemy_sound = mixer.Sound("audio/kill_enemy.mp3")
 
 #class for text
 class Label(sprite.Sprite):
@@ -197,6 +198,7 @@ class Player(BaseSprite):
                 if enemy.hp <= 0:
                     blood_stains.add(BloodStain(enemy.rect.centerx, enemy.rect.centery))
                     all_map_sprite.add(blood_stains)
+                    kill_enemy_sound.play()
                     enemy.kill()
 
 class Health(sprite.Sprite):
