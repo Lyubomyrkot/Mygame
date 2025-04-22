@@ -70,9 +70,11 @@ walls = sprite.Group()
 coins = sprite.Group()
 hp_helpers = sprite.Group()
 enemies = sprite.Group()
+blood_stains = sprite.Group()
+
 
 #завантаження музики
-mixer.music.load("audio/background_music.mp3")
+mixer.music.load("audio/background_music1.mp3")
 mixer.music.set_volume(0.2)
 mixer.music.play()
 
@@ -193,6 +195,8 @@ class Player(BaseSprite):
                 enemy.hp -= self.damage
                 damage_sound.play()
                 if enemy.hp <= 0:
+                    blood_stains.add(BloodStain(enemy.rect.centerx, enemy.rect.centery))
+                    all_map_sprite.add(blood_stains)
                     enemy.kill()
 
 class Health(sprite.Sprite):
@@ -405,6 +409,13 @@ class TreeEnemy(Enemy):
                     self.rect.x -= self.speed
                     self.dir = random.choice(self.dir_list)
 
+class BloodStain(sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = image.load("images/blood_stain.png")
+        self.image = transform.scale(self.image, (40, 40))
+        self.rect = self.image.get_rect(center=(x, y))
+
 
 #map loading
 def game_start():
@@ -416,6 +427,7 @@ def game_start():
     coins.empty()
     hp_helpers.empty()
     enemies.empty()
+    blood_stains.empty()
 
     mixer.music.play()
     run = True
@@ -499,6 +511,7 @@ while run:
                     screen = "stop"
 
         all_sprites.draw(window)
+        blood_stains.draw(window)
         player.draw(window)
         player.update()
         all_labels.draw(window)
