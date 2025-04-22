@@ -127,6 +127,7 @@ class Player(BaseSprite):
         self.left_image = transform.flip(self.image, True, False)
         self.speed = 4
         self.hp = 100
+        self.damage = 10
         self.coins_counter = 0
         self.damage_timer = time.get_ticks()
 
@@ -174,6 +175,13 @@ class Player(BaseSprite):
             for s in all_map_sprite:
                 s.rect.x -= shift_x
                 s.rect.y -= shift_y
+
+    def attack(self, enemies_group):
+        for enemy in enemies_group:
+            if self.rect.colliderect(enemy.rect):  # Перевірка зіткнення
+                enemy.hp -= self.damage
+                if enemy.hp <= 0:
+                    enemy.kill()
 
 class Health(sprite.Sprite):
     def __init__(self, x, y, hp):
@@ -468,7 +476,9 @@ while run:
                 run = False
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
-                    screen = "stop"
+                    screen = "stop" 
+                if e.key == K_SPACE:
+                    player.attack(enemies)
                 
 
             if e.type == MOUSEBUTTONDOWN:
@@ -484,6 +494,8 @@ while run:
         enemies.draw(window)
         for enemy in enemies:
             enemy.update(player)
+        
+       
 
         if player.hp <= 0:
             screen = "stop"
