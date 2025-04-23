@@ -82,6 +82,7 @@ damage_sound = mixer.Sound("audio/player_damage.mp3")
 money_sound = mixer.Sound("audio/coin_collect.mp3")
 health_sound = mixer.Sound("audio/potion_drink.mp3")
 kill_enemy_sound = mixer.Sound("audio/kill_enemy.mp3")
+button_click_sound = mixer.Sound("audio/button_click.mp3")
 
 #class for text
 class Label(sprite.Sprite):
@@ -418,6 +419,15 @@ class BloodStain(sprite.Sprite):
         self.image = transform.scale(self.image, (40, 40))
         self.rect = self.image.get_rect(center=(x, y))
 
+def state_star():
+    stars = 0
+    if player.coins_counter >= 10:
+        stars += 1
+    if len(enemies) == 0:
+        stars += 1
+    if player.hp > 0:
+        stars += 1
+    return stars
 
 #map loading
 def game_start():
@@ -478,7 +488,7 @@ game_start()
 coins_label = Label(f"Coins: {player.coins_counter}", 10, 60)
 health_bar = Health(10, 10, player.hp)
 
-stop_btn = BaseSprite(stop_btn_img, WIDTH-TILE_SIZE-5, 5, TILE_SIZE, TILE_SIZE)
+stop_btn_img = Area(stop_btn_img, WIDTH-TILE_SIZE-5, 5, TILE_SIZE, TILE_SIZE)
 stop_btn = Rect(WIDTH-TILE_SIZE-5, 5, TILE_SIZE, TILE_SIZE)
 
 menu = Area(menu_img, 550, 185, WIDTH, HEIGHT)
@@ -510,7 +520,10 @@ while run:
             if e.type == MOUSEBUTTONDOWN:
                 x, y = mouse.get_pos()
                 if stop_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     screen = "stop"
+                    star_count = state_star()
+                    print(f"Гравець отримав {star_count} зірок з 3!")
 
         all_sprites.draw(window)
         blood_stains.draw(window)
@@ -519,6 +532,7 @@ while run:
         all_labels.draw(window)
         health_bar.draw(window)
         enemies.draw(window)
+        stop_btn_img.draw(window)
         for enemy in enemies:
             enemy.update(player)
         
@@ -541,18 +555,22 @@ while run:
                 x, y = mouse.get_pos()
                 print(x, y)
                 if play_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     screen = "game"
                     game_start()
                     coins_label.set_text(f"Coins: {player.coins_counter}")
                     health_bar.hp = player.hp
 
                 if shop_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     screen = "shop"
 
                 if options_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     screen = "options"
 
                 if exit_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     run = False
 
 
@@ -564,6 +582,7 @@ while run:
                 run = False
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
+
                     screen = "menu"
 
 
@@ -588,15 +607,18 @@ while run:
                 x, y = mouse.get_pos()
                 print(x, y)
                 if continue_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     screen = "game"
 
                 if restart_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     game_start()
                     coins_label.set_text(f"Coins: {player.coins_counter}")
                     health_bar.hp = player.hp
                     screen = "game"
 
                 if exit_stop_btn.collidepoint(x, y):
+                    button_click_sound.play()
                     run = False
             
         stop_menu.draw(window)
