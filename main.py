@@ -466,7 +466,8 @@ def game_start():
                     if symbol == ".":
                         map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                     if symbol == "b":
-                        map_object = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
+                        finish_block = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
+                        map_object = finish_block
                     if symbol == "h":
                         all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
                         map_object = BaseSprite(hp_help_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
@@ -524,6 +525,11 @@ while run:
                     screen = "stop"
                     star_count = state_star()
                     print(f"Гравець отримав {star_count} зірок з 3!")
+            
+        if player.rect.colliderect(finish_block.rect):
+            star_count = state_star()
+            print(f"Гравець отримав {star_count} зірок з 3!")
+            run = False
 
         all_sprites.draw(window)
         blood_stains.draw(window)
@@ -542,6 +548,8 @@ while run:
             mixer.music.stop()
             screen = "stop"
             player.kill()
+
+        
 
     if screen == "menu":
         window.fill((82, 99, 115))
