@@ -243,7 +243,7 @@ class Health(sprite.Sprite):
                 window.blit(self.zero, (x, self.y))
             
             x += TILE_SIZE + 5
-            
+
 class Stars(sprite.Sprite):
     def __init__(self, x, y, count):
         super().__init__()
@@ -507,7 +507,7 @@ def game_start():
                     if symbol == ".":
                         map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                     if symbol == "b":
-                        finish_block = BaseSprite(close_door_img, x, y, TILE_SIZE, TILE_SIZE)
+                        finish_block = BaseSprite(open_door_img, x, y, TILE_SIZE, TILE_SIZE)
                         map_object = finish_block
                     if symbol == "h":
                         all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
@@ -725,16 +725,6 @@ while run:
         star_count = state_star()
         stars_bar = Stars(574, 307, star_count)
         stars_bar.draw(window)
-
-
-                
-
-
-
-            
-
-
-    #window.blit()
     
     display.update()
     clock.tick(FPS)
