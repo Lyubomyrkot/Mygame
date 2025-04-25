@@ -34,6 +34,9 @@ player_img = transform.scale(player_img, (TILE_SIZE, TILE_SIZE))
 coin_img = image.load("images/coin.png")
 coin_img = transform.scale(coin_img, (TILE_SIZE, TILE_SIZE))
 
+diamond_img = image.load("images/diamond.png")
+diamond_img = transform.scale(diamond_img, (TILE_SIZE, TILE_SIZE))
+
 health_img = image.load("images/health/health_full.png")
 health_img = transform.scale(health_img, (TILE_SIZE, TILE_SIZE))
 
@@ -58,6 +61,8 @@ level_img = image.load("images/menu/level_menu.png")
 stop_btn_img = image.load("images/stop_btn.png")
 stop_btn_img = transform.scale(stop_btn_img, (TILE_SIZE, TILE_SIZE))
 
+close_door_img = image.load("images/close_door.png")
+open_door_img = image.load("images/open_door.png")
 
 enemy_tree_img = image.load("images/enemies/enemy_tree.png")
 enemy_tree_img = transform.scale(enemy_tree_img, (TILE_SIZE, TILE_SIZE))
@@ -77,6 +82,7 @@ coins = sprite.Group()
 hp_helpers = sprite.Group()
 enemies = sprite.Group()
 blood_stains = sprite.Group()
+diamonds = sprite.Group()
 
 
 #завантаження музики
@@ -148,6 +154,7 @@ class Player(BaseSprite):
         self.hp = 100
         self.damage = 10
         self.coins_counter = 0
+        self.diamonds_counter = 0
         self.damage_timer = time.get_ticks()
 
     def update(self):
@@ -182,6 +189,12 @@ class Player(BaseSprite):
             self.coins_counter += 1
             money_sound.play()
             coins_label.set_text(f"Coins: {self.coins_counter}")
+        
+        coll_list = sprite.spritecollide(player, diamonds, True, sprite.collide_mask)
+        if len(coll_list) > 0:
+            self.diamonds_counter += 1
+            money_sound.play()
+            diamonds_label.set_text(f"Diamonds: {self.diamonds_counter}")
 
         coll_list = sprite.spritecollide(player, hp_helpers, True, sprite.collide_mask)
         if len(coll_list) > 0:
@@ -465,7 +478,7 @@ def game_start():
     enemies.empty()
     blood_stains.empty()
 
-    mixer.music.play()
+    #mixer.music.play()
     run = True
     
 
@@ -487,10 +500,14 @@ def game_start():
                         all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
                         map_object = BaseSprite(coin_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
                         coins.add(map_object)
+                    if symbol == "d":
+                        all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
+                        map_object = BaseSprite(diamond_img, x, y, TILE_SIZE/1.5, TILE_SIZE/1.5)
+                        diamonds.add(map_object)
                     if symbol == ".":
                         map_object = BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE)
                     if symbol == "b":
-                        finish_block = BaseSprite(block_img, x, y, TILE_SIZE, TILE_SIZE)
+                        finish_block = BaseSprite(close_door_img, x, y, TILE_SIZE, TILE_SIZE)
                         map_object = finish_block
                     if symbol == "h":
                         all_map_sprite.add(BaseSprite(floor_img, x, y, TILE_SIZE, TILE_SIZE))
@@ -511,6 +528,7 @@ game_start()
 
 #labels
 coins_label = Label(f"Coins: {player.coins_counter}", 10, 60)
+diamonds_label = Label(f"Diamonds: {player.diamonds_counter}", 10, 100)
 health_bar = Health(10, 10, player.hp)
 
 stop_btn_img = Area(stop_btn_img, WIDTH-TILE_SIZE-5, 5, TILE_SIZE, TILE_SIZE)
@@ -530,7 +548,7 @@ exit_stop_btn = Rect(632, 468, 150, 38)
 vining_img = Area(vining_img, 550, 185, WIDTH, HEIGHT)
 restart_btnvn = Rect(665, 477, 35, 40)
 menu_btn = Rect(600, 477, 35, 40)
-level_btn = Rect(730, 477, 35, 40)
+level_btnvl = Rect(730, 477, 35, 40)
 
 defeat_img = Area(defeat_img, 550, 185, WIDTH, HEIGHT)
 
@@ -599,6 +617,7 @@ while run:
                     screen = "game"
                     game_start()
                     coins_label.set_text(f"Coins: {player.coins_counter}")
+                    diamonds_label.set_text(f"Diamonds: {player.diamonds_counter}")
                     health_bar.hp = player.hp
 
                 if shop_btn.collidepoint(x, y):
@@ -642,6 +661,7 @@ while run:
                     screen = "game"
                     game_start()
                     coins_label.set_text(f"Coins: {player.coins_counter}")
+                    diamonds_label.set_text(f"Diamonds: {player.diamonds_counter}")
                     health_bar.hp = player.hp
                 if menu_btnlvl.collidepoint(x, y):
                     button_click_sound.play()
@@ -667,6 +687,7 @@ while run:
                     button_click_sound.play()
                     game_start()
                     coins_label.set_text(f"Coins: {player.coins_counter}")
+                    diamonds_label.set_text(f"Diamonds: {player.diamonds_counter}")
                     health_bar.hp = player.hp
                     screen = "game"
 
@@ -691,12 +712,13 @@ while run:
                     button_click_sound.play()
                     game_start()
                     coins_label.set_text(f"Coins: {player.coins_counter}")
+                    diamonds_label.set_text(f"Diamonds: {player.diamonds_counter}")
                     health_bar.hp = player.hp
                     screen = "game"
                 if menu_btn.collidepoint(x, y):
                     button_click_sound.play()
                     screen = "menu"
-                if level_btn.collidepoint(x, y):
+                if level_btnvl.collidepoint(x, y):
                     button_click_sound.play()
                     screen = "level"
         vining_img.draw(window)

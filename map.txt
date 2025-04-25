@@ -1,35 +1,35 @@
 
              wwwwwwwwwwwwww
-             w..........c.w
-             w........h...w
-             w.....h......w
-             w....c.......w
-             w......p..h..w
-             w....c.......w
-             w.e......h...w
+             w............w
+             w............w
+             w............w
+             w............w
+             w......p.....w
+             w............w
+             w............w
              wwwwww..wwwwww
                   w..w
                   w..w
                   w..w
           wwwwwwwww..wwwwwwwww   wwwwwwwwwwwwwwwwwwww
-          w......c...........w   w.........c........w
-          w...h..c.......e...wwwww..................w
-          w......c..c..b................e...c.......w
-          w...h..c.............e...c.........h......w
-          w..ccc.ce....c.....wwwww........e.........w
-          w......h...........w   w...h.........h....w
+          w..................w   w..................w
+          w...e.......e......wwwww.........d...e....w
+          w.....h...c................c..............w
+          w...e................h.......e............w
+          w......c...e.......wwwww..h......c.....h..w
+          w..................w   w...........e......w
           wwwwwwwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww
-                                         we.ww
-                                         w...w
-                                         w..ww     
-               wwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww
-               w.............w   w..................w
-               w..c..........wwwww......h...........w
-               w...................c................w
-               w......h..............h......h.......w
-               w.............wwwwwc.................w
-               w.............w   w.....c............w
-               w....c........w   wwwwwwwwwwwwwwwwwwww
-               w..........c..w
-               w.....h.......w
+                                         w..w
+                                         w..w          wwwwwwbwwwww
+                                         w..w          w..........w
+               wwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww  w..........w
+               w......c......w   w....h.............w  w..e.......w
+               w.............wwwww.e.....c...........wwww....e.h..w
+               w.....e.........h...........c.............c........w
+               w..........................e....h...........h......w
+               w.e......c....wwwww....c.............wwww....e.....w
+               w..........h..w   w.....d............w  w..........w
+               w.....d.......w   wwwwwwwwwwwwwwwwwwww  w.......e..w
+               w.............w                         w.e........w
+               w.......e.....w                         wwwwwwwwwwww
                wwwwwwwwwwwwwww
