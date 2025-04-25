@@ -12,15 +12,15 @@
                   w..w
                   w..w
           wwwwwwwww..wwwwwwwww   wwwwwwwwwwwwwwwwwwww
-          w..................w   w.........c........w
-          w...h..........e...wwwww..................w
-          w.........c...................e...c.......w
-          w...h................e...c.........h......w
-          w.......e....c.....wwwww........e.........w
+          w......c...........w   w.........c........w
+          w...h..c.......e...wwwww..................w
+          w......c..c..b................e...c.......w
+          w...h..c.............e...c.........h......w
+          w..ccc.ce....c.....wwwww........e.........w
           w......h...........w   w...h.........h....w
           wwwwwwwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww
                                          we.ww
-                                         w...b
+                                         w...w
                                          w..ww     
                wwwwwwwwwwwwwww   wwwwwwwww..wwwwwwwww
                w.............w   w..................w

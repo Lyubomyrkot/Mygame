@@ -46,8 +46,14 @@ health_zero = transform.scale(health_zero, (TILE_SIZE, TILE_SIZE))
 hp_help_img = image.load("images/hp_help.png")
 hp_help_img = transform.scale(hp_help_img, (TILE_SIZE, TILE_SIZE))
 
-menu_img = image.load("images/menu.png")
-stop_menu_img = image.load("images/stop_menu.png")
+star_img = image.load("images/star/star_full.png")
+star_zero_img = image.load("images/star/star_zero.png")
+
+menu_img = image.load("images/menu/menu.png")
+stop_menu_img = image.load("images/menu/stop_menu.png")
+vining_img = image.load("images/menu/vining_menu.png")
+defeat_img = image.load("images/menu/defeat_menu.png")
+level_img = image.load("images/menu/level_menu.png")
 
 stop_btn_img = image.load("images/stop_btn.png")
 stop_btn_img = transform.scale(stop_btn_img, (TILE_SIZE, TILE_SIZE))
@@ -76,7 +82,7 @@ blood_stains = sprite.Group()
 #завантаження музики
 mixer.music.load("audio/background_music1.mp3")
 mixer.music.set_volume(0.2)
-mixer.music.play()
+#mixer.music.play()
 
 damage_sound = mixer.Sound("audio/player_damage.mp3")
 money_sound = mixer.Sound("audio/coin_collect.mp3")
@@ -224,7 +230,25 @@ class Health(sprite.Sprite):
                 window.blit(self.zero, (x, self.y))
             
             x += TILE_SIZE + 5
+            
+class Stars(sprite.Sprite):
+    def __init__(self, x, y, count):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.count = count
+        self.full = star_img
+        self.zero = star_zero_img
 
+    def draw(self, window):
+        x = self.x  
+        for i in range(3):
+            if i < self.count:
+                window.blit(self.full, (x, self.y))
+            else:
+                window.blit(self.zero, (x, self.y))
+
+            x += TILE_SIZE + 40
 
 class Enemy(BaseSprite):
     def __init__(self, image, x, y, width, height):
@@ -431,7 +455,7 @@ def state_star():
 
 #map loading
 def game_start():
-    global player, screen, run, all_map_sprite, all_sprites, walls, coins, hp_helpers, enemies
+    global player, screen, run, all_map_sprite, all_sprites, walls, coins, hp_helpers, enemies, finish_block
 
     all_map_sprite.empty()
     all_sprites.empty()
@@ -496,12 +520,23 @@ menu = Area(menu_img, 550, 185, WIDTH, HEIGHT)
 play_btn = Rect(622, 260, 150, 38)
 exit_btn = Rect(622, 499, 150, 38)
 shop_btn = Rect(622, 340, 150, 38)
-options_btn = Rect(622, 420, 150, 38)
+level_btn = Rect(622, 420, 150, 38)
 
 stop_menu = Area(stop_menu_img, 550, 185, WIDTH, HEIGHT)
 continue_btn = Rect(632, 308, 150, 38)
 restart_btn = Rect(632, 388, 150, 38)
 exit_stop_btn = Rect(632, 468, 150, 38)
+
+vining_img = Area(vining_img, 550, 185, WIDTH, HEIGHT)
+restart_btnvn = Rect(665, 477, 35, 40)
+menu_btn = Rect(600, 477, 35, 40)
+level_btn = Rect(730, 477, 35, 40)
+
+defeat_img = Area(defeat_img, 550, 185, WIDTH, HEIGHT)
+
+level_img = Area(level_img, 530, 185, WIDTH, HEIGHT)
+level_1_btn = Rect(584, 304, 37, 40)
+menu_btnlvl = Rect(686, 529, 37, 40)
 
 screen = "menu"
 
@@ -523,13 +558,10 @@ while run:
                 if stop_btn.collidepoint(x, y):
                     button_click_sound.play()
                     screen = "stop"
-                    star_count = state_star()
-                    print(f"Гравець отримав {star_count} зірок з 3!")
+
             
         if player.rect.colliderect(finish_block.rect):
-            star_count = state_star()
-            print(f"Гравець отримав {star_count} зірок з 3!")
-            run = False
+            screen = "end_game"
 
         all_sprites.draw(window)
         blood_stains.draw(window)
@@ -573,9 +605,9 @@ while run:
                     button_click_sound.play()
                     screen = "shop"
 
-                if options_btn.collidepoint(x, y):
+                if level_btn.collidepoint(x, y):
                     button_click_sound.play()
-                    screen = "options"
+                    screen = "level"
 
                 if exit_btn.collidepoint(x, y):
                     button_click_sound.play()
@@ -594,14 +626,27 @@ while run:
                     screen = "menu"
 
 
-    if screen == "options":
-        window.fill((182, 49, 195))
+    if screen == "level":
+        window.fill((82, 99, 115))
         for e in event.get():
             if e.type == QUIT:
                 run = False
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
                     screen = "menu"
+            if e.type == MOUSEBUTTONDOWN:
+                x, y = mouse.get_pos()
+                print(x, y)
+                if level_1_btn.collidepoint(x, y):
+                    button_click_sound.play()
+                    screen = "game"
+                    game_start()
+                    coins_label.set_text(f"Coins: {player.coins_counter}")
+                    health_bar.hp = player.hp
+                if menu_btnlvl.collidepoint(x, y):
+                    button_click_sound.play()
+                    screen = "menu"
+        level_img.draw(window)
 
     if screen == "stop":
         window.fill((82, 99, 115))
@@ -630,6 +675,35 @@ while run:
                     run = False
             
         stop_menu.draw(window)
+    
+    if screen == "end_game":
+        window.fill((82, 99, 115))
+        for e in event.get():
+            if e.type == QUIT:
+                run = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    run = False
+            if e.type == MOUSEBUTTONDOWN:
+                x, y = mouse.get_pos()
+                print(x, y)
+                if restart_btnvn.collidepoint(x, y):
+                    button_click_sound.play()
+                    game_start()
+                    coins_label.set_text(f"Coins: {player.coins_counter}")
+                    health_bar.hp = player.hp
+                    screen = "game"
+                if menu_btn.collidepoint(x, y):
+                    button_click_sound.play()
+                    screen = "menu"
+                if level_btn.collidepoint(x, y):
+                    button_click_sound.play()
+                    screen = "level"
+        vining_img.draw(window)
+        star_count = state_star()
+        stars_bar = Stars(574, 307, star_count)
+        stars_bar.draw(window)
+
 
                 
 
